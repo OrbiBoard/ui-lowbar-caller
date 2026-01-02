@@ -24,12 +24,12 @@
       try {
         const label = new Intl.DateTimeFormat('en-US', { timeZone: tz, weekday: 'short' }).format(new Date(Date.UTC(y, m, d, 12)));
         return ({Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6})[label] ?? new Date(y, m, d).getDay();
-      } catch { return new Date(y, m, d).getDay(); }
+      } catch (e) { return new Date(y, m, d).getDay(); }
     }
     function render(){
       const now = new Date();
       let parts = null;
-      try { parts = new Intl.DateTimeFormat('zh-CN', { timeZone: tz, year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(now); } catch {}
+      try { parts = new Intl.DateTimeFormat('zh-CN', { timeZone: tz, year:'numeric', month:'2-digit', day:'2-digit' }).formatToParts(now); } catch (e) {}
       const get = (t) => parts ? (parts.find(p=>p.type===t)?.value || '') : null;
       const curY = parts ? parseInt(get('year'),10) : now.getFullYear();
       const curM0 = parts ? (parseInt(get('month'),10)-1) : now.getMonth();

@@ -26,7 +26,7 @@
       let parts;
       try {
         parts = new Intl.DateTimeFormat('zh-CN', { timeZone: tz, hour12: false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' }).formatToParts(d);
-      } catch { parts = null; }
+      } catch (e) { parts = null; }
       const get = (t) => parts ? (parts.find(p=>p.type===t)?.value || '') : null;
       const secVal = parts ? parseInt(get('second')||'0',10) : (d.getSeconds());
       const h = parts ? get('hour') : pad(d.getHours());
@@ -44,7 +44,7 @@
       if (opts.showDate) { dateEl.textContent = date; dateEl.style.display = 'block'; } else { dateEl.style.display = 'none'; }
     }
     window.addEventListener('DOMContentLoaded', async () => {
-      try { const v = await window.pluginAPI?.configGet?.('system','timeZone'); if (v) tz = String(v); } catch {}
+      try { const v = await window.pluginAPI?.configGet?.('system','timeZone'); if (v) tz = String(v); } catch (e) {}
       tick(); setInterval(tick, 500);
     });
   </script>
