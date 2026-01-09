@@ -4,7 +4,7 @@ const url = require('url');
 let pluginApi = null;
 // 运行态状态由调用方掌控
 const state = {
-  eventChannel: 'example.lowbar',
+  eventChannel: 'example-lowbar',
   currentMode: 'clock',
   clockOpts: { date: 0, seconds: 0, blink: 0 },
   backgroundTargets: {},
@@ -129,10 +129,10 @@ const functions = {
 
       const params = {
         title: 'UI模板-低栏应用',
-        // 事件通道用于双向通讯，示例使用 example.lowbar
-        eventChannel: 'example.lowbar',
-        subscribeTopics: ['example.lowbar'],
-        callerPluginId: 'ui.lowbar.caller',
+        // 事件通道用于双向通讯，示例使用 example-lowbar
+        eventChannel: 'example-lowbar',
+        subscribeTopics: ['example-lowbar'],
+        callerPluginId: 'ui-lowbar-caller',
         // 缩小浮窗相对宽度（及高度），示例设为 48%
         floatingSizePercent: 48,
         // 使用绝对尺寸示例：宽 720px，高 420px（优先生效）
@@ -161,7 +161,7 @@ const functions = {
       state.countdownMins = 10; state.countdownUntil = null; state.countdownPaused = false; state.countdownRemain = 0; state.calendarOffset = 0;
       state.floatBase = url.pathToFileURL(floatFile).href;
       state.floatCountdownBase = url.pathToFileURL(floatCdFile).href;
-      await pluginApi.call('ui.lowbar', 'openTemplate', [params]);
+      await pluginApi.call('ui-lowbar', 'openTemplate', [params]);
       return true;
     } catch (e) {
       return { ok: false, error: e?.message || String(e) };
