@@ -1,11 +1,7 @@
-# ui-lowbar-caller 插件
+# 示例.底栏UI (ui-lowbar-caller)
 
-该仓库包含 OrbiBoard 主程序的 ui-lowbar-caller 插件源码。
+## 简介
+这是一个示例调用者插件，演示如何通过动作调用“UI模板-低栏应用”打开窗口并传递事件通道。
 
-用法
-- 将本目录作为独立 Git 仓库管理。
-- 依赖请在 `plugin.json` 的 `npmDependencies` 或 `dependencies` 中声明，由主程序在运行时通过插件依赖管理安装。
-
-开发
-- 页面入口：`background/*` 与 `float/*`
-- 后端入口：`index.js`
+## 功能
+- **打开模板窗口**: 演示打开基于底栏模板的窗口。
