@@ -17,9 +17,26 @@
     const opts = {
       showDate: qs('date') === '1',
       showSeconds: qs('seconds') === '1',
-      blinkColon: qs('blink') === '1'
+      blinkColon: qs('blink') === '1',
+      theme: qs('theme') || 'dark',
+      accent: qs('accent') || '#4c8bf5'
     };
     let tz = qs('tz') || 'Asia/Shanghai';
+
+    function applyTheme() {
+      if (opts.theme === 'light') {
+        document.body.style.background = '#f5f5f5';
+        document.body.style.color = '#333';
+        const dateEl = document.getElementById('date');
+        if (dateEl) dateEl.style.color = '#666';
+      } else {
+        document.body.style.background = '#000';
+        document.body.style.color = '#e6e6e6';
+        const dateEl = document.getElementById('date');
+        if (dateEl) dateEl.style.color = '#c8c8c8';
+      }
+    }
+    
     function pad(n){ return String(n).padStart(2,'0'); }
     function fmt(){
       const d = new Date();
@@ -44,6 +61,7 @@
       if (opts.showDate) { dateEl.textContent = date; dateEl.style.display = 'block'; } else { dateEl.style.display = 'none'; }
     }
     window.addEventListener('DOMContentLoaded', async () => {
+      applyTheme();
       try { const v = await window.pluginAPI?.configGet?.('system','timeZone'); if (v) tz = String(v); } catch (e) {}
       tick(); setInterval(tick, 500);
     });

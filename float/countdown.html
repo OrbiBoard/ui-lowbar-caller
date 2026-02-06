@@ -16,6 +16,48 @@
     .custom input { width: 90px; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.14); background: rgba(26,26,28,0.8); color: #e6e6e6; outline: none; }
     .custom button { padding: 8px 12px; border-radius: 8px; border: none; background: rgba(38,38,40,0.9); color: #e6e6e6; cursor: pointer; }
   </style>
+  <script>
+    function qs(name){ const m = location.search.match(new RegExp('[?&]'+name+'=([^&]+)')); return m? decodeURIComponent(m[1]) : null; }
+    const theme = qs('theme') || 'dark';
+    const accent = qs('accent') || '#4c8bf5';
+
+    function applyTheme() {
+      const isLight = theme === 'light';
+      if (isLight) {
+        document.body.style.background = '#f2f2f7';
+        document.body.style.color = '#333';
+        const h1 = document.querySelector('h1');
+        if (h1) h1.style.color = '#333';
+        
+        const style = document.createElement('style');
+        style.textContent = `
+          a.card {
+            background: #fff;
+            color: #333;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+          }
+          .custom input {
+            background: #fff;
+            color: #333;
+            border: 1px solid rgba(0,0,0,0.1);
+          }
+          .custom button {
+            background: ${accent};
+            color: #fff;
+          }
+        `;
+        document.head.appendChild(style);
+      } else {
+        // Dark mode accent for button
+        const style = document.createElement('style');
+        style.textContent = `
+          .custom button { background: ${accent}; color: #fff; }
+        `;
+        document.head.appendChild(style);
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="panel">
@@ -33,12 +75,25 @@
     </div>
   </div>
   <script>
+    applyTheme();
+    
+    document.querySelectorAll('a.card').forEach(a => {
+        try {
+          const u = new URL(a.href, window.location.href);
+          u.searchParams.set('theme', theme);
+          u.searchParams.set('accent', accent);
+          a.href = u.href;
+        } catch (e) {}
+    });
+
     document.getElementById('apply').addEventListener('click', () => {
       const v = parseInt(document.getElementById('mins').value, 10);
       if (!Number.isFinite(v) || v <= 0) return;
       const u = new URL('./countdown.html', window.location.href);
       u.searchParams.set('mode', 'countdown');
       u.searchParams.set('mins', String(v));
+      u.searchParams.set('theme', theme);
+      u.searchParams.set('accent', accent);
       window.location.href = u.href;
     });
   </script>

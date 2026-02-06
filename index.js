@@ -29,6 +29,17 @@ function emitUpdate(target, value) {
     console.error('[CALLER] Error emitting update:', e);
   }
 }
+
+function appendThemeParams(u) {
+  if (pluginApi && pluginApi.theme) {
+    const t = pluginApi.theme.get();
+    if (t.ok) {
+      if (t.mode) u.searchParams.set('theme', t.mode);
+      if (t.color) u.searchParams.set('accent', t.color);
+    }
+  }
+}
+
 function buildClockUrl() {
   const base = state.backgroundTargets.clock || '';
   if (!base) return '';
@@ -36,6 +47,7 @@ function buildClockUrl() {
   u.searchParams.set('date', String(state.clockOpts.date));
   u.searchParams.set('seconds', String(state.clockOpts.seconds));
   u.searchParams.set('blink', String(state.clockOpts.blink));
+  appendThemeParams(u);
   return u.href;
 }
 function leftItemsForMode(mode) {
@@ -81,6 +93,7 @@ function buildCountdownUrl(mins){
   if (!base) return '';
   const u = new URL(base);
   u.searchParams.set('mins', String(Math.max(1, Math.floor(mins || 10))));
+  appendThemeParams(u);
   return u.href;
 }
 
@@ -96,6 +109,7 @@ function buildCountdownUrlFromState(){
   } else {
     u.searchParams.set('mins', String(Math.max(1, Math.floor(state.countdownMins || 10))));
   }
+  appendThemeParams(u);
   return u.href;
 }
 
@@ -104,6 +118,7 @@ function buildStopwatchUrl(action){
   if (!base) return '';
   const u = new URL(base);
   if (action) u.searchParams.set('action', action);
+  appendThemeParams(u);
   return u.href;
 }
 
@@ -112,6 +127,7 @@ function buildCalendarUrl(){
   if (!base) return '';
   const u = new URL(base);
   u.searchParams.set('offset', String(state.calendarOffset || 0));
+  appendThemeParams(u);
   return u.href;
 }
 
@@ -125,7 +141,12 @@ const functions = {
       const stopwatchFile = path.join(__dirname, 'background', 'stopwatch.html');
       const floatFile = path.join(__dirname, 'float', 'control.html');
       const floatCdFile = path.join(__dirname, 'float', 'countdown.html');
-      const bgUrl = url.pathToFileURL(clockFile).href + '?date=0&seconds=0&blink=0';
+      const bgUrlObj = new URL(url.pathToFileURL(clockFile).href);
+      bgUrlObj.searchParams.set('date', '0');
+      bgUrlObj.searchParams.set('seconds', '0');
+      bgUrlObj.searchParams.set('blink', '0');
+      appendThemeParams(bgUrlObj);
+      const bgUrl = bgUrlObj.href;
 
       const params = {
         title: 'UI模板-低栏应用',
@@ -184,6 +205,7 @@ const functions = {
           emitUpdate('floatingBounds', { width: 380, height: 240 });
           const u = new URL(state.floatCountdownBase);
           u.searchParams.set('mode', 'countdown');
+          appendThemeParams(u);
           emitUpdate('floatingUrl', u.href);
         }
         else if (payload.id === 'countdown-reset') { state.countdownPaused = false; state.countdownRemain = 0; state.countdownUntil = Date.now() + (state.countdownMins*60*1000); emitUpdate('backgroundUrl', buildCountdownUrlFromState()); }
@@ -203,6 +225,7 @@ const functions = {
           emitUpdate('floatingBounds', { width: 720, height: 420 });
           const u = new URL(state.floatBase);
           u.searchParams.set('mode', state.currentMode);
+          appendThemeParams(u);
           emitUpdate('floatingUrl', u.href);
         }
       } else if (payload.type === 'float.mode') {

@@ -19,6 +19,31 @@
   <script>
     function qs(name){ const m = location.search.match(new RegExp('[?&]'+name+'=([^&]+)')); return m? decodeURIComponent(m[1]) : null; }
     const tz = qs('tz') || 'Asia/Shanghai';
+    const theme = qs('theme') || 'dark';
+    const accent = qs('accent') || '#4c8bf5';
+
+    function applyTheme() {
+      const isLight = theme === 'light';
+      document.body.style.background = isLight ? '#f5f5f5' : '#000';
+      document.body.style.color = isLight ? '#333' : '#e6e6e6';
+      
+      const style = document.createElement('style');
+      style.textContent = `
+        .cell {
+          background: ${isLight ? '#fff' : '#101012'};
+          box-shadow: inset 0 0 0 1px ${isLight ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.05)'};
+        }
+        .cell.weekend { color: ${isLight ? '#5050aa' : '#d0d0ff'}; }
+        .cell.today {
+          color: ${isLight ? accent : '#fff'};
+          box-shadow: 0 0 0 2px ${accent} inset;
+          background: ${isLight ? '#fff' : '#101012'};
+        }
+        .week { color: ${isLight ? '#666' : '#c8c8c8'}; }
+      `;
+      document.head.appendChild(style);
+    }
+
     function daysInMonth(y, m){ return new Date(y, m+1, 0).getDate(); }
     function getWeekdayIndex(y,m,d){
       try {
@@ -62,6 +87,7 @@
       }
     }
     window.addEventListener('DOMContentLoaded', () => {
+      applyTheme();
       // 周标题
       const weekEl = document.getElementById('week');
       const names = ['日','一','二','三','四','五','六'];

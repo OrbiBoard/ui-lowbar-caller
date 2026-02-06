@@ -20,7 +20,20 @@
     function stop(){ running=false; clearInterval(timer); timer=null; render(); }
     function reset(){ elapsed=0; running=false; clearInterval(timer); timer=null; render(); }
     function qs(name){ const m = location.search.match(new RegExp('[?&]'+name+'=([^&]+)')); return m? decodeURIComponent(m[1]) : null; }
+    
+    function applyTheme() {
+      const theme = qs('theme') || 'dark';
+      if (theme === 'light') {
+        document.body.style.background = '#f5f5f5';
+        document.body.style.color = '#333';
+      } else {
+        document.body.style.background = '#000';
+        document.body.style.color = '#e6e6e6';
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => { 
+      applyTheme();
       // 载入持久化状态
       const savedElapsed = parseInt(localStorage.getItem('stopwatch:elapsed')||'0',10);
       const savedRunning = localStorage.getItem('stopwatch:running')==='1';
